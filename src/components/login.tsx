@@ -2,21 +2,30 @@
 
 import { login, ValidatedLoginDetails } from '@/services/auth';
 import Form from 'next/form'
-import Link from 'next/link';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation'
 
 export function LoginComponent() {
+    const router = useRouter();
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [loginPending, setLoginPending] = useState(false);
 
     return (
-        <div className="flex">
+        <div>
+            {loginPending &&
+                <div>Logging in...<br /></div>
+            }
             <Form action={performLogin}>
-                Email: <input className="border-2" name="email" onInput={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} /><br />
-                Password: <input className="border-2" name="password" onInput={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} />
-                <button type="submit">Submit</button>
-            </Form>
+                Email: <input className="border-2" name="email" disabled={loginPending} onInput={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} /><br />
+                Password: <input className="border-2" name="password" disabled={loginPending} onInput={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} /><br />
+                <button type="submit" disabled={loginPending}>Submit</button>
+            </Form><br />
+            {errorMessage &&
+                <div>{errorMessage}</div>
+            }
         </div>
     )
 
@@ -27,12 +36,15 @@ export function LoginComponent() {
     }
 
 
-    function performLogin(formData: FormData) {
+    async function performLogin(formData: FormData) {
+        setLoginPending(true);
         const validatedDetails = validateLogin();
         login(validatedDetails).then((session) => {
-            setErrorMessage('');
+            router.replace('/')
         }).catch((e: Error) => {
             setErrorMessage(e.toString())
+        }).finally(() => {
+            setLoginPending(false)
         })
     }
 }

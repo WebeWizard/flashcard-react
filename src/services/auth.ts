@@ -29,22 +29,23 @@ export async function createAccount(accountDetails: ValidatedCreateAccountDetail
 
 export async function login(loginDetails: ValidatedLoginDetails): Promise<boolean> {
     try {
-        const response = await fetch(`/api/login`, {
+        const response = await fetch(`/api/account/login`, {
             method: "POST",
             body: JSON.stringify(loginDetails)
         });
-        // TODO: parse response
-        // TODO: save to local storage
+        const session: Session = await response.json();
+        window.localStorage.setItem("session", JSON.stringify(session));
+
         return true;
     } catch (e) {
         // TODO: parse error message from response
-        throw new Error("failed to login");
+        throw new Error("Failed to Login");
     }
 }
 
 export async function logout(session: Session): Promise<boolean> {
     try {
-        const response = await fetch(`/api/logout`, {
+        const response = await fetch(`/api/account/logout`, {
             method: "POST",
             body: JSON.stringify({ token: session.token })
         });
