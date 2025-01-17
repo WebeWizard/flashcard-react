@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { TopBar } from "@/components/top-bar";
+import { Footer } from "@/components/footer";
 
 export const metadata: Metadata = {
   title: "WebeWizard Flashcard React",
@@ -14,7 +16,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+        <div className="min-h-screen">
+          <div className="flex flex-col ">
+            <TopBar />
+            <div className="flex grow min-h-full">{children}</div>
+          </div>
+        </div>
+        <Footer />
       </body>
     </html>
   );
