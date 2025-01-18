@@ -8,6 +8,12 @@ export interface ValidatedLoginDetails {
     pass: string,
 }
 
+export interface ValidatedVerifyDetails {
+    email: string,
+    pass: string,
+    code: string,
+}
+
 export interface Session {
     token: string,
     account_id: string,
@@ -40,6 +46,19 @@ export async function login(loginDetails: ValidatedLoginDetails): Promise<boolea
     } catch (e) {
         // TODO: parse error message from response
         throw new Error("Failed to Login");
+    }
+}
+
+export async function verify(verifyDetails: ValidatedVerifyDetails): Promise<boolean> {
+    try {
+        const response = await fetch(`/api/account/logout`, {
+            method: "POST",
+            body: JSON.stringify(verifyDetails)
+        });
+        return true;
+    } catch (e) {
+        // TODO: parse error message from response
+        throw new Error("failed to verify account");
     }
 }
 
