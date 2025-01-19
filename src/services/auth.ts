@@ -51,10 +51,12 @@ export async function login(loginDetails: ValidatedLoginDetails): Promise<boolea
 
 export async function verify(verifyDetails: ValidatedVerifyDetails): Promise<boolean> {
     try {
-        const response = await fetch(`/api/account/logout`, {
+        const response = await fetch(`/api/account/verify`, {
             method: "POST",
             body: JSON.stringify(verifyDetails)
         });
+        const session: Session = await response.json();
+        window.localStorage.setItem("session", JSON.stringify(session));
         return true;
     } catch (e) {
         // TODO: parse error message from response
